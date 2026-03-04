@@ -1,0 +1,5 @@
+{
+  "name": "XaniPromt",
+  "description": "A minimalist, highly customizable prompt generator for various AI models with auto-translation and structure control.",
+  "requestFramePermissions": []
+}

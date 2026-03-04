@@ -64,13 +64,18 @@ export default function App() {
         responseStyle, noExtraText, noFormatting
       };
       const generated = await generatePrompts(params);
+      if (!Array.isArray(generated) || generated.length === 0) {
+        alert("No prompt was returned. Please try again.");
+        return;
+      }
       setResults(generated);
       const newItem: HistoryItem = { id: crypto.randomUUID(), idea, results: generated, timestamp: Date.now() };
       const newHistory = [newItem, ...history].slice(0, 20);
       saveHistory(newHistory);
     } catch (error) {
       console.error("Error generating:", error);
-      alert("Failed to generate prompts.");
+      const message = error instanceof Error ? error.message : "Failed to generate prompts.";
+      alert(message);
     } finally {
       setIsGenerating(false);
     }
@@ -89,6 +94,8 @@ export default function App() {
       setSuggestions(newSuggestions);
     } catch (error) {
       console.error("Failed to enhance idea:", error);
+      const message = error instanceof Error ? error.message : "Failed to enhance idea.";
+      alert(message);
     } finally {
       setIsEnhancing(false);
     }

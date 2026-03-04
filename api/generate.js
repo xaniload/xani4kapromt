@@ -1,6 +1,16 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 const MODEL = "gemini-3-flash-preview";
+const MAX_RETRIES = 3;
+
+const RETRYABLE_MARKERS = [
+  "high demand",
+  "rate limit",
+  "resource exhausted",
+  "temporarily unavailable",
+  "unavailable",
+  "internal",
+];
 
 function getAiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -33,6 +43,31 @@ function formatError(error) {
     // ignore
   }
   return raw;
+}
+
+function shouldRetry(error) {
+  const message = formatError(error).toLowerCase();
+  return RETRYABLE_MARKERS.some((marker) => message.includes(marker));
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateWithRetry(ai, request) {
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt += 1) {
+    try {
+      return await ai.models.generateContent(request);
+    } catch (error) {
+      lastError = error;
+      if (!shouldRetry(error) || attempt === MAX_RETRIES) {
+        throw error;
+      }
+      await sleep(1000 * attempt);
+    }
+  }
+  throw lastError;
 }
 
 function buildPrompt(params) {
@@ -85,7 +120,7 @@ export default async function handler(req, res) {
     }
 
     const ai = getAiClient();
-    const response = await ai.models.generateContent({
+    const response = await generateWithRetry(ai, {
       model: MODEL,
       contents: buildPrompt(params),
       config: {

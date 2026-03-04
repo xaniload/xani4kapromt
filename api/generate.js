@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const MODEL = "gemini-3-flash-preview";
+const MODEL = "gemini-flash-latest";
 const MAX_RETRIES = 3;
 
 const RETRYABLE_MARKERS = [

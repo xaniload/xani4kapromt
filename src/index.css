@@ -12,7 +12,6 @@ body {
   color: #111827;
 }
 
-/* Custom scrollbar for minimal look */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

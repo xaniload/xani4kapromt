@@ -1,144 +1,141 @@
 # XaniPromt
 
-A clean web app for turning rough ideas into high-quality prompts for LLMs and image models.
+XaniPromt is a prompt builder for text and image AI tools. It takes a rough idea, improves it, suggests missing details, and generates 1 to 5 prompt variants through Gemini-powered API routes.
 
-[![Vercel](https://img.shields.io/badge/Live-Vercel-000000?logo=vercel&logoColor=white)](https://xani4kapromt.vercel.app)
-[![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+## Current Version
 
-## What It Does
+This version includes:
 
-- Refines a rough idea before prompt generation
-- Generates 1-5 prompt variants
-- Supports multiple target models, tones, and output formats
-- Optionally adds role prefix and negative prompt
-- Stores last prompts in local history
-- One-click copy for prompt and negative prompt
+- React 19 + TypeScript frontend built with Vite 6
+- Tailwind CSS 4 styling
+- API routes in `api/`
+- Prompt generation through `gemini-2.5-flash`
+- Idea enhancement before generation
+- Short improvement suggestions
+- Prompt history stored in `localStorage`
+- Copy buttons for prompt and negative prompt
+- Output controls for language, structure, tone, response style, role prefix, negative prompt, no extra text, and no formatting
 
-> [!TIP]
-> You can generate prompts for ChatGPT, Claude, Gemini, GitHub Copilot, Midjourney, Stable Diffusion, and other LLM/image platforms.
-> This app is a prompt generator: copy the result and use it in your preferred cloud or local AI tool.
+## How It Works
 
-## What's New (XaniPromtUpdate)
+The app has three backend endpoints:
 
-- Added smarter idea enhancement with quick suggestion chips
-- Added one-click `Restore` to return to the original idea after enhancement
-- Added advanced output controls:
-  - `Response Style` (`Serious` / `Simple`)
-  - `No Extra Text`
-  - `No Formatting`
-- Improved history management:
-  - keep up to 20 items
-  - remove single item
-  - clear all history
-- Updated UI layout for faster prompt editing and settings control
-- Kept Gemini API key handling server-side for better security
+- `POST /api/generate` creates final prompt variants
+- `POST /api/enhance` rewrites the raw idea into a cleaner brief
+- `POST /api/suggestions` returns short idea-improvement chips
 
-## Latest Update
-
-- Improved prompt generation performance for faster responses.
-- Improved generation reliability so the app consistently returns prompt output.
+The frontend sends the selected settings to these endpoints and renders the result cards in the browser.
 
 ## Tech Stack
 
 - React 19
-- TypeScript
+- TypeScript 5
 - Vite 6
 - Tailwind CSS 4
-- Google Gemini SDK (`@google/genai`)
+- `@google/genai`
+- Node-based API functions
+- `motion` for UI transitions
+- `lucide-react` for icons
 
-## Quick Start
+## Project Structure
 
-### 1. Requirements
+```text
+.
+├── api/
+│   ├── enhance.js
+│   ├── generate.js
+│   └── suggestions.js
+├── src/
+│   ├── App.tsx
+│   ├── index.css
+│   ├── main.tsx
+│   └── services/gemini.ts
+├── dist/
+├── env.sample
+├── index.html
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
 
-- Node.js 20+ (recommended)
+## Requirements
+
+- Node.js 20 or newer
 - npm
+- Gemini API key
 
-### 2. Install
+## Local Setup
+
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-### 3. Configure Environment
-
-Create `.env.local`:
+2. Create local environment file:
 
 ```bash
 cp env.sample .env.local
 ```
 
-Then set your key:
+3. Set your Gemini API key in `.env.local`:
 
 ```bash
-GEMINI_API_KEY=your_key_here
+GEMINI_API_KEY=your_real_key_here
+APP_URL=http://localhost:3000
 ```
 
-### 4. Run Locally
+4. Start local development:
 
 ```bash
 npx vercel dev
 ```
 
-Open: `http://localhost:3000`
+The app will usually be available at `http://localhost:3000`.
 
-## Hosting / How to Upload
-
-### 1. Upload to GitHub
+## Available Commands
 
 ```bash
-git add .
-git commit -m "Update XaniPromt"
-git push origin main
+npm run dev
+npm run build
+npm run preview
+npm run lint
 ```
 
-### 2. Deploy to Vercel (Recommended)
+`npm run dev` starts the Vite frontend only.
 
-1. Open Vercel Dashboard and click `Add New -> Project`.
-2. Import `xanilload/xani4kapromt`.
-3. In Project Settings -> Environment Variables, add:
-   - `GEMINI_API_KEY=your_new_key`
-4. Set the variable for `Production`, `Preview`, and `Development`.
-5. Click `Deploy`.
-6. After deploy, open the generated Vercel URL.
+`npx vercel dev` is the correct way to run the frontend together with the `api/` routes locally.
 
-### 3. Update After New Changes
+## Production Build
 
-Each time you change the code:
+Create the frontend bundle with:
 
 ```bash
-git add .
-git commit -m "your update message"
-git push origin main
+npm run build
 ```
 
-If GitHub is connected to Vercel, deployment starts automatically after each push.
+The compiled frontend files are written to `dist/`.
 
-## Scripts
+## Notes
 
-```bash
-npm run dev      # Start local dev server
-npm run build    # Build production bundle
-npm run preview  # Preview production build
-npm run lint     # Type-check (tsc --noEmit)
-```
-
-## Deploy (Vercel)
-
-1. Import this repository into Vercel.
-2. Set `GEMINI_API_KEY` in Project Settings -> Environment Variables.
-3. Trigger redeploy.
+- The frontend history is stored in browser `localStorage` under `xani_history_v2`.
+- Generated prompts are returned as structured JSON from the backend.
+- The selected Gemini model in this version is `gemini-2.5-flash`.
+- `APP_URL` exists in `env.sample`, but the current code path relies mainly on relative `/api/...` requests.
 
 ## Troubleshooting
 
-- `403` / `API key is invalid` / `key leaked`
-: Your old key was revoked. Create a new Gemini API key, update `GEMINI_API_KEY` in Vercel, and redeploy.
 - `GEMINI_API_KEY is not configured`
-: Add `GEMINI_API_KEY` in Vercel Project Settings -> Environment Variables for `Production`, `Preview`, and `Development`.
+  Add the key to Vercel environment variables or `.env.local` for local serverless development.
+
+- Requests fail in plain `npm run dev`
+  Use `npx vercel dev` instead, because Vite alone does not serve the `api/` functions.
+
+- Empty prompt results
+  Check API logs, confirm the key is valid, and verify the Gemini request is not being rate-limited.
 
 ## Security
 
-- Never commit real API keys.
-- Keep `.env*` files private.
-- If a key was exposed, rotate it immediately.
+- Do not commit real `.env.local` files.
+- Rotate the Gemini key if it was exposed.
+- Keep secrets only in environment variables.

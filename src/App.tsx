@@ -44,7 +44,6 @@ export default function App() {
       try {
         setHistory(JSON.parse(saved));
       } catch (e) {
-        // ignore
       }
     }
   }, []);
@@ -131,19 +130,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-8">
-      
-      {/* Header */}
       <header className="text-center space-y-2 mb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-gray-900">XaniPromt</h1>
         <p className="text-gray-500 text-sm">Minimalist prompt engineering for everyone.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* Main Content (Left) */}
         <div className="lg:col-span-8 space-y-8">
-          
-          {/* Main Input Card */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
             <div className="flex justify-between items-center">
               <label htmlFor="idea" className="block text-sm font-medium text-gray-700">
@@ -197,7 +190,6 @@ export default function App() {
             </div>
           </section>
 
-          {/* Results */}
           <AnimatePresence>
             {results.length > 0 && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -235,7 +227,6 @@ export default function App() {
             )}
           </AnimatePresence>
 
-          {/* History */}
           {history.length > 0 && (
             <section className="space-y-4">
               <div className="flex justify-between items-center">
@@ -262,7 +253,6 @@ export default function App() {
           )}
         </div>
 
-        {/* Sidebar (Right) */}
         <aside className="lg:col-span-4 space-y-6">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6 space-y-6">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-900 border-b border-gray-100 pb-2">Settings</h2>

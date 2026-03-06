@@ -30,7 +30,6 @@ function formatError(error) {
       return parsed.error.message;
     }
   } catch {
-    // ignore
   }
   return raw;
 }
